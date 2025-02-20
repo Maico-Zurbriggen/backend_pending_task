@@ -3,29 +3,87 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
+//Controllers para pending-task
+
 const app = express();
+app.use(express.json());
+
 app.use(cookieParser());
+
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
-app.post('/login', (req, res) => {
-  const user = {id: 1, userName: "Maico"};
-  const token = jwt.sign(user, 'clave indecifrable', { expiresIn: '1h' });
+const users = [];
+const notes = {};
 
-  res.cookie('token', token, { httpOnly: true, secure: true });
-  res.status(200).send(true);
+//CONTROLLERS PARA USUARIOS
+//Controller para agregar un nuevo usuario
+app.post('/api/users', (req, res) => {
+  const body = req.body;
+
+  if (body) {
+    users.push(body);
+    res.cookie('session', body.name, { httpOnly:true, maxAge: 24 * 60 * 60 * 1000});
+    res.status(201).json(body);
+  } else {
+    res.status(401).json({ message: "No pudo registrarse el usuario" })
+  }
 })
 
-app.get('/protected', (req, res) => {
-  const token = req.cookies.token;
+//Controller para verificar a un usuario que intenta loguearse
+app.post('/api/login', (req, res) => {
+  const { name, password } = req.body;
 
-  if (!token) return res.status(401).send('Acceso Denegado');
+  const user = users.find(u => u.name === name && u.password === password);
 
-  try {
-    const verified = jwt.verify(token, 'clave indecifrable');
-    req.user = verified;
-    res.status(200).send(true);
-  } catch {
-    res.status(400).send(false);
+  if (user) {
+    res.cookie('session', 'some-session-token', { httpOnly:true, maxAge: 24 * 60 * 60 * 1000 });
+    res.status(200).json({ message: "Sesion iniciada" });
+  } else {
+    res.status(401).json({ message: "Credenciales Incorrectas" });
+  }
+});
+
+//Controler para verificar si un usuario esta logueado
+app.get('/api/protected', (req, res) => {
+  const sessionCookie = req.cookies['session'];
+
+  if (sessionCookie) {
+    res.status(200).json({ message: "Acceso permitido" });
+  } else {
+    res.status(401).json({ message: "Acceso denegado" });
+  }
+})
+
+//CONTROLLERS PARA NOTAS
+//Controller para agregar notas
+app.post('/api/notes', (req, res) => {
+  const body = req.body;
+  const user = body.user;
+  
+  delete body.user;
+
+  if (body) {
+    if (notes[user]) {
+      notes[user].push(body);
+    } else {
+      notes[user] = [body];
+    }
+    res.status(201).json({ message: "Nota creada" });
+  } else {
+    res.status(401).json({ message: "Error al crear la nota" });
+  }
+})
+
+//Controller para solicitar las notas de un usuario
+app.get('/api/notes/user', (req, res) => {
+  const user = req.body;
+
+  const notesUser = notes[user];
+
+  if (notesUser) {
+    res.status(200).json(notesUser);
+  } else {
+    res.status(401).json({ message: "Notas no encontradas" });
   }
 })
 
