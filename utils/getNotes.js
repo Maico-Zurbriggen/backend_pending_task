@@ -13,6 +13,9 @@ export const getNotes = (app, users, SECRET_KEY) => {
         const user = decoded;
 
         const userAuthenticated = users.find(u => u.name === user.userName);
+        if (!userAuthenticated) {
+          return res.status(401).json("Usuario no encontrado");
+        }
         const notesUser = userAuthenticated.notes;
 
         if (notesUser.length) {
