@@ -8,7 +8,7 @@ export const newUser = (app, users) => {
       users.push(body);
       return res.status(201).json("Usuario registrado");
     } else {
-      return res.status(401).json("No pudo registrarse el usuario");
+      return res.status(401).json({ input: "name", errorMessage: "Nombre de usuario ya registrado" });
     }
   });
 };
