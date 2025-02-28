@@ -13,7 +13,7 @@ export const newNote = (app, users, SECRET_KEY) => {
         const user = decoded;
         const note = req.body;
 
-        if (Object.values(note).length) {
+        if (!users.some((u) => u.notes.some((n) => n.content === note.content))) {
           users = users.map((u) => {
             if (u.name === user.userName) {
               u.notes.push(note);
@@ -22,7 +22,7 @@ export const newNote = (app, users, SECRET_KEY) => {
           });
           return res.status(201).json("Nota agregada correctamente");
         } else {
-          return res.status(400).json("La nota no puede estar vacía");
+          return res.status(401).json({ input: "content", errorMessage: "Las notas no pueden tener el mismo contenido" });
         }
       });
     } else {

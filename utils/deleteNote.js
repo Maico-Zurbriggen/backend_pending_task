@@ -15,8 +15,6 @@ export const deleteNote = (app, users, SECRET_KEY) => {
 
         if (contentToDelete) {
           users = users.map(u => {
-            console.log(u.name);
-            console.log(user.userName);
             if (u.name === user.userName) {
               const updatedNotes = u.notes.filter((note) => note.content !== contentToDelete);
               u.notes = updatedNotes;
