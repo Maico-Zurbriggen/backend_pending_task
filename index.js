@@ -1,11 +1,16 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import { newUser, login, logout, verificateLog, getNotes, newNote, deleteNote } from './utils/index.js';
 
-//Controllers para pending-task
+//Configuramos dotenv
+dotenv.config();
 
-const SECRET_KEY = "some-secret";
+//Llamamos a la variable de entorno SECRET_KEY para usarla en el token de autenticacion
+SECRET_KEY = process.env.SECRET_KEY;
+
+//Controllers para pending-task
 
 const app = express();
 app.use(express.json());
