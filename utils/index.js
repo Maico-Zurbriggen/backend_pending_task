@@ -5,3 +5,6 @@ export { verificateLog } from './verificateLog.js';
 export { getNotes } from './getNotes.js';
 export { newNote } from './newNote.js';
 export { deleteNote } from './deleteNote.js';
+export { getProjects } from './getProjects.js';
+export { newProject } from './newProject.js';
+export { deleteProject } from './deleteProject.js';
