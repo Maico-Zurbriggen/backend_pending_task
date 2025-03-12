@@ -16,22 +16,26 @@ export const newNote = ({ app, users, SECRET_KEY }) => {
       const user = decoded;
       const {note, project} = req.body;
 
-      if (!users.some((u) => u[project].some((n) => n.content === note.content))) {
-        users = users.map((u) => {
-          if (u.name === user.userName) {
-            u[project].notes.push(note);
-          }
-          return u;
-        });
-        return res.status(201).json("Nota agregada correctamente");
-      } else {
-        return res
-          .status(401)
-          .json({
-            input: "content",
-            errorMessage: "Las notas no pueden tener el mismo contenido",
-          });
+      if (!note || !project) {
+        return res.status(400).json("Faltan datos requeridos");
       }
+
+      const userToUpdate = users.find(u => u.name === user.userName);
+      if (!userToUpdate) {
+        return res.status(404).json("Usuario no encontrado");
+      }
+
+      const projectToUpdate = userToUpdate.projects.find(p => p.name === project);
+      if (!projectToUpdate) {
+        return res.status(404).json("Proyecto no encontrado");
+      }
+
+      if (projectToUpdate.notes.some(n => n.content === note.content)) {
+        return res.status(409).json({ input: "content", errorMessage: "Las notas no pueden tener el mismo contenido" });
+      }
+
+      projectToUpdate.notes.push(note);
+      return res.status(201).json("Nota creada correctamente");
     });
   });
-};
+}

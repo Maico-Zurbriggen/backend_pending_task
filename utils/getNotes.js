@@ -10,6 +10,10 @@ export const getNotes = ({ app, users, SECRET_KEY }) => {
       return res.status(401).json("Usuario no autenticado");
     }
 
+    if (!project || typeof project !== "string") {
+      return res.status(400).json("Datos requeridos no encontrados o inválidos");
+    }
+
     jwt.verify(sessionCookie, SECRET_KEY, (err, decoded) => {
       if (err) {
         return res.status(401).json("Token invalido o expirado");
@@ -18,15 +22,25 @@ export const getNotes = ({ app, users, SECRET_KEY }) => {
 
       const userAuthenticated = users.find((u) => u.name === user.userName);
       if (!userAuthenticated) {
-        return res.status(401).json("Usuario no encontrado");
+        return res.status(404).json("Usuario no encontrado");
       }
-      const notesUser = userAuthenticated[project].notes;
+      
+      const projectUser = userAuthenticated.projects.find(p => p.name === project)
+      if (!projectUser) {
+        return res.status(404).json("Proyecto no encontrado");
+      }
+      
+      if (!Array.isArray(projectUser.notes)) {
+        return res.status(500).json("La estructura de datos del proyecto es inválida");
+      }
 
-      if (notesUser.length) {
-        return res.status(200).json(notesUser);
-      } else {
+      const notesProjectUser = projectUser.notes;
+
+      if (!notesProjectUser.length) {
         return res.status(204).json("Aun no hay notas");
       }
+      
+      return res.status(200).json(notesProjectUser);
     });
   });
 };

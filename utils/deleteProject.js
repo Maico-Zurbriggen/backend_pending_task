@@ -27,6 +27,8 @@ app.delete("/pending_task/projects/:index", (req, res) => {
       }
       return u;
     });
+
+    res.status(200).json("Proyecto eliminado correctamente");
   });
 });
 }
