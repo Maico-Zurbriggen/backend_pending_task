@@ -16,8 +16,8 @@ export const newNote = ({ app, users, SECRET_KEY }) => {
       const user = decoded;
       const {note, project} = req.body;
 
-      if (!note || !project) {
-        return res.status(400).json("Faltan datos requeridos");
+      if (!note || !project || typeof note !== "object" || typeof project !== "string") {
+        return res.status(400).json("Faltan datos requeridos o son inválidos");
       }
 
       const userToUpdate = users.find(u => u.name === user.userName);

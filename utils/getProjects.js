@@ -20,13 +20,17 @@ export const getProjects = ({app, users, SECRET_KEY}) => {
         return res.status(401).json("Usuario no encontrado");
       }
 
+      if (!Array.isArray(userAuthenticated.projects)) {
+        return res.status(500).json("La estructura de datos del proyecto es inválida");
+      }
+
       const projectsUser = userAuthenticated.projects
 
-      if (projectsUser.length) {
-        return res.status(200).json(projectsUser);
-      } else {
+      if (!projectsUser.length) {
         return res.status(204).json("Aún no hay proyectos");
       }
+
+      return res.status(200).json(projectsUser);
     });
   });
 }

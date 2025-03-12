@@ -13,8 +13,11 @@ export const login = ({ app, users, SECRET_KEY }) => {
 
     const { name, password } = req.body;
 
-    const user = users.find((u) => u.name === name);
+    if (!name || !password || typeof name !== "string" || typeof password !== "string") {
+      return res.status(400).json("Datos requeridos no encontrados o inválidos");
+    }
 
+    const user = users.find((u) => u.name === name);
     if (!user) {
       return res
         .status(401)

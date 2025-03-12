@@ -11,8 +11,8 @@ export const deleteNote = ({ app, users, SECRET_KEY }) => {
       return res.status(401).json("Usuario no autenticado");
     }
 
-    if (!project || !contentToDelete) {
-      return res.status(400).json("Ausencia de datos requeridos");
+    if (!project || !contentToDelete || typeof project !== "string" || typeof contentToDelete !== "string") {
+      return res.status(400).json("Ausencia de datos requeridos o inválidos");
     }
 
     jwt.verify(sessionCookie, SECRET_KEY, (err, decoded) => {
