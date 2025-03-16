@@ -9,6 +9,7 @@ dotenv.config();
 
 //Llamamos a la variable de entorno SECRET_KEY para usarla en el token de autenticacion
 const SECRET_KEY = process.env.SECRET_KEY;
+const isProduction = process.env.NODE_ENV === "production";
 
 //Controllers para pending-task
 
@@ -17,7 +18,7 @@ app.use(express.json());
 
 app.use(cookieParser());
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: isProduction ? 'https://maico-zurbriggen.github.io/' : 'http://localhost:5173', credentials: true }));
 
 const users = [];
 
