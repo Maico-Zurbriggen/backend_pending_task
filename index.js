@@ -17,7 +17,7 @@ app.use(express.json());
 
 app.use(cookieParser());
 
-app.use(cors({ origin: 'https://maico-zurbriggen.github.io/', credentials: true }));
+app.use(cors({ origin: 'https://maico-zurbriggen.github.io', credentials: true }));
 
 const users = [];
 
