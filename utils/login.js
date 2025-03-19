@@ -39,9 +39,10 @@ export const login = ({ app, users, SECRET_KEY }) => {
     res.cookie("session", token, {
       httpOnly: true,
       secure: true,
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
     });
-
+    
     res.status(200).json("Usuario autenticado");
   });
 };
