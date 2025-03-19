@@ -34,8 +34,6 @@ export const login = ({ app, users, SECRET_KEY }) => {
       expiresIn: "24h",
     });
 
-    console.log("Este es el token", token);
-
     res.cookie("session", token, {
       httpOnly: true,
       secure: true,

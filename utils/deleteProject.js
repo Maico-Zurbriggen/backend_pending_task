@@ -20,7 +20,7 @@ app.delete("/pending_task/projects/:index", (req, res) => {
     }
     const user = decoded;
 
-    userToUpdate = users.find(u => u.name === user.userName);
+    const userToUpdate = users.find(u => u.name === user.userName);
     if (!userToUpdate) {
       return res.status(404).json("Usuario no encontrado");
     }
