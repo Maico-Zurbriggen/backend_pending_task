@@ -1,7 +1,5 @@
 import jwt from "jsonwebtoken";
 
-const isProduction = process.env.NODE_ENV === "production";
-
 export const login = ({ app, users, SECRET_KEY }) => {
   //Controller para verificar a un usuario que intenta loguearse
   app.post("/pending_task/login", (req, res) => {
@@ -35,13 +33,15 @@ export const login = ({ app, users, SECRET_KEY }) => {
     const token = jwt.sign({ userName: name }, SECRET_KEY, {
       expiresIn: "24h",
     });
+
     console.log("Este es el token", token);
+
     res.cookie("session", token, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: "strict",
+      secure: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
+
     res.status(200).json("Usuario autenticado");
   });
 };
