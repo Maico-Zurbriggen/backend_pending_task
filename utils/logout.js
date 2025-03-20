@@ -6,6 +6,7 @@ export const logout = ({ app, SECRET_KEY }) => {
     const sessionCookie = req.cookies.session;
 
     if (!sessionCookie) {
+
       return res.status(401).json("Usuario no autenticado");
     }
 
@@ -14,7 +15,11 @@ export const logout = ({ app, SECRET_KEY }) => {
         return res.status(401).json("Token invalido o expirado");
       }
 
-      res.clearCookie("session");
+      res.clearCookie("session", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      });
       res.status(200).json("Sesion cerrada con exito");
     });
   });
